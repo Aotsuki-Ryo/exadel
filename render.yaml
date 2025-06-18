@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: compreface
+    env: docker
+    dockerfilePath: ./custom-builds/Single-Docker-File/Dockerfile
+    dockerContext: .
+    port: 80
+    envVars:
+      - key: BASE_IMAGE
+        value: exadel/compreface-core:1.2.0-mobilenet
+      - key: VERSION
+        value: 1.2.0
+      - key: ADMIN_JAVA_OPTS
+        value: -Xmx1g
+      - key: API_JAVA_OPTS
+        value: -Xmx2g
+      - key: MAX_FILE_SIZE
+        value: 10MB
+      - key: MAX_REQUEST_SIZE
+        value: 20MB
+    disk:
+      name: compreface-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 10
+    healthCheckPath: /

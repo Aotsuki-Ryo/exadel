@@ -1,0 +1,7 @@
+[build]
+  builder = "DOCKERFILE"
+  dockerfilePath = "custom-builds/Single-Docker-File/Dockerfile"
+
+[deploy]
+  healthcheckPath = "/"
+  restartPolicyType = "ON_FAILURE"
