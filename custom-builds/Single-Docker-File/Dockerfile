@@ -12,7 +12,7 @@ FROM exadel/compreface-fe:${VERSION} as fe
 FROM ${BASE_IMAGE}
 
 ENV UWSGI_PROCESSES=2
-ENV UWSWI_THREADS=1
+ENV UWSGI_THREADS=1 # Corrected typo from UWSWI_THREADS
 ################# compreface-core end ####################
 
 ENV TZ=America/Los_Angeles
@@ -24,12 +24,11 @@ ENV POSTGRES_PASSWORD=M7yfTsBscdqvZs49
 ENV POSTGRES_DB=frs
 ENV PGDATA=/var/lib/postgresql/data
 
-RUN apt-get update && apt-get install -y lsb-release
-RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-# Updated: Using the recommended method to add the GPG key for PostgreSQL repository
-RUN wget -O /etc/apt/trusted.gpg.d/postgresql.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
-RUN apt-get update && apt-get install -y postgresql-13 \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y lsb-release && \
+    sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+    wget -O /etc/apt/trusted.gpg.d/postgresql.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
+    apt-get update && apt-get install -y postgresql-13 \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN rm /etc/postgresql/13/main/postgresql.conf
 COPY custom-builds/Single-Docker-File/postgresql.conf /etc/postgresql/13/main/postgresql.conf
@@ -40,9 +39,9 @@ COPY --from=postgres_db /docker-entrypoint-initdb.d/initdb.sql /initdb.sql
 USER postgres
 
 RUN /etc/init.d/postgresql start && \
-    psql --command "CREATE USER ${POSTGRES_USER} WITH SUPERUSER PASSWORD '${POSTGRES_PASSWORD}';" && \
-    createdb -O ${POSTGRES_USER} ${POSTGRES_DB} && \
-    psql -d ${POSTGRES_DB} -a -f /initdb.sql
+    psql --command "CREATE USER ${POSTGRES_USER} WITH SUPERUSER PASSWORD '${POSTGRES_PASSWORD}';" && \
+    createdb -O ${POSTGRES_USER} ${POSTGRES_DB} && \
+    psql -d ${POSTGRES_DB} -a -f /initdb.sql
 
 RUN cp -r $PGDATA /var/lib/postgresql/default
 
@@ -87,7 +86,7 @@ COPY --from=api /home/app.jar /app/api/app.jar
 ################# compreface-fe start ####################
 
 RUN apt-get update && apt-get install -y nginx \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 RUN adduser --system --no-create-home --shell /bin/false --group --disabled-login nginx
 
 USER nginx
