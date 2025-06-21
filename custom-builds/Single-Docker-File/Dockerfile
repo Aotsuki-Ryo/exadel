@@ -12,7 +12,7 @@ FROM exadel/compreface-fe:${VERSION} as fe
 FROM ${BASE_IMAGE}
 
 ENV UWSGI_PROCESSES=2
-ENV UWSGI_THREADS=1
+ENV UWSWI_THREADS=1
 ################# compreface-core end ####################
 
 ENV TZ=America/Los_Angeles
@@ -26,7 +26,8 @@ ENV PGDATA=/var/lib/postgresql/data
 
 RUN apt-get update && apt-get install -y lsb-release
 RUN sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+# Updated: Using the recommended method to add the GPG key for PostgreSQL repository
+RUN wget -O /etc/apt/trusted.gpg.d/postgresql.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
 RUN apt-get update && apt-get install -y postgresql-13 \
     && rm -rf /var/lib/apt/lists/*
 
