@@ -12,7 +12,8 @@ FROM exadel/compreface-fe:${VERSION} as fe
 FROM ${BASE_IMAGE}
 
 ENV UWSGI_PROCESSES=2
-ENV UWSGI_THREADS=1 # Corrected typo from UWSWI_THREADS
+ENV UWSGI_THREADS=1 
+# Corrected typo from UWSWI_THREADS
 ################# compreface-core end ####################
 
 ENV TZ=America/Los_Angeles
