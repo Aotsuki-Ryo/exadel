@@ -1,5 +1,5 @@
-ARG BASE_IMAGE=exadel/compreface-core:latest
-ARG VERSION=latest
+ARG BASE_IMAGE=exadel/compreface-core:1.2.0
+ARG VERSION=1.2.0
 
 ################# init images start ####################
 # FROM exadel/compreface-postgres-db:${VERSION} as postgres_db
@@ -62,8 +62,11 @@ ENV MAX_FILE_SIZE=5MB
 ENV MAX_REQUEST_SIZE=10MB
 
 # Original lines for Adoptium repository and temurin-17-jdk are replaced below
+# RUN apt-get update \
+#     && apt-get install -y openjdk-17-jdk \
+#     && rm -rf /var/lib/apt/lists/*
 RUN apt-get update \
-    && apt-get install -y openjdk-17-jdk \
+    && apt-get install -y openjdk-17-jre \ 
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=admin /home/app.jar /app/admin/app.jar
