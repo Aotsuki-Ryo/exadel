@@ -2,7 +2,7 @@ ARG BASE_IMAGE=exadel/compreface-core:latest
 ARG VERSION=latest
 
 ################# init images start ####################
-FROM exadel/compreface-postgres-db:${VERSION} as postgres_db
+# FROM exadel/compreface-postgres-db:${VERSION} as postgres_db
 FROM exadel/compreface-admin:${VERSION} as admin
 FROM exadel/compreface-api:${VERSION} as api
 FROM exadel/compreface-fe:${VERSION} as fe
@@ -20,39 +20,39 @@ ENV TZ=America/Los_Angeles
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ################# compreface-postgres-db start ####################
-ENV POSTGRES_USER=compreface
-ENV POSTGRES_PASSWORD=M7yfTsBscdqvZs49
-ENV POSTGRES_DB=frs
-ENV PGDATA=/var/lib/postgresql/data
+# ENV POSTGRES_USER=compreface
+# ENV POSTGRES_PASSWORD=M7yfTsBscdqvZs49
+# ENV POSTGRES_DB=frs
+# ENV PGDATA=/var/lib/postgresql/data
 
-RUN apt-get update && apt-get install -y lsb-release && \
-    sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
-    wget -O /etc/apt/trusted.gpg.d/postgresql.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
-    apt-get update && apt-get install -y postgresql-13 \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y lsb-release && \
+#     sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && \
+#     wget -O /etc/apt/trusted.gpg.d/postgresql.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc && \
+#     apt-get update && apt-get install -y postgresql-13 \
+#     && rm -rf /var/lib/apt/lists/*
 
-RUN rm /etc/postgresql/13/main/postgresql.conf
-COPY custom-builds/Single-Docker-File/postgresql.conf /etc/postgresql/13/main/postgresql.conf
-RUN mv /var/lib/postgresql/13/main $PGDATA
+# RUN rm /etc/postgresql/13/main/postgresql.conf
+# COPY custom-builds/Single-Docker-File/postgresql.conf /etc/postgresql/13/main/postgresql.conf
+# RUN mv /var/lib/postgresql/13/main $PGDATA
 
-COPY --from=postgres_db /docker-entrypoint-initdb.d/initdb.sql /initdb.sql
+# COPY --from=postgres_db /docker-entrypoint-initdb.d/initdb.sql /initdb.sql
 
-USER postgres
+# USER postgres
 
-RUN /etc/init.d/postgresql start && \
-    psql --command "CREATE USER ${POSTGRES_USER} WITH SUPERUSER PASSWORD '${POSTGRES_PASSWORD}';" && \
-    createdb -O ${POSTGRES_USER} ${POSTGRES_DB} && \
-    psql -d ${POSTGRES_DB} -a -f /initdb.sql
+# RUN /etc/init.d/postgresql start && \
+#     psql --command "CREATE USER ${POSTGRES_USER} WITH SUPERUSER PASSWORD '${POSTGRES_PASSWORD}';" && \
+#     createdb -O ${POSTGRES_USER} ${POSTGRES_DB} && \
+#     psql -d ${POSTGRES_DB} -a -f /initdb.sql
 
-RUN cp -r $PGDATA /var/lib/postgresql/default
+# RUN cp -r $PGDATA /var/lib/postgresql/default
 
-USER root
+# USER root
 
 ################# compreface-postgres-db end ####################
 
 ################# compreface-admin start ####################
 
-ENV POSTGRES_URL=jdbc:postgresql://localhost:5432/${POSTGRES_DB}
+ENV POSTGRES_URL=jdbc:postgresql://${POSTGRES_DOMAIN}:${POSTGRES_PORT}/${POSTGRES_DB}
 ENV SPRING_PROFILES_ACTIVE=dev
 ENV ENABLE_EMAIL_SERVER=false
 ENV ADMIN_JAVA_OPTS=-Xmx1g
