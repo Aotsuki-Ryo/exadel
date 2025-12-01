@@ -11,10 +11,10 @@ FROM exadel/compreface-fe:${VERSION} as fe
 ################# compreface-core start ####################
 FROM ${BASE_IMAGE}
 
-ENV UWSGI_PROCESSES=2
+ENV UWSGI_PROCESSES=1
 ENV UWSGI_THREADS=1 
 ENV ML_PORT=3001
-# Corrected typo from UWSWI_THREADS
+# Reduced from 2 processes to 1 to avoid loading ML model twice
 ################# compreface-core end ####################
 
 ENV TZ=America/Los_Angeles
@@ -56,7 +56,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 ENV POSTGRES_URL=jdbc:postgresql://${POSTGRES_DOMAIN}:${POSTGRES_PORT}/${POSTGRES_DB}
 ENV SPRING_PROFILES_ACTIVE=dev
 ENV ENABLE_EMAIL_SERVER=false
-ENV ADMIN_JAVA_OPTS=-Xmx1g
+ENV ADMIN_JAVA_OPTS=-Xmx256m
 ENV CRUD_PORT=8081
 ENV PYTHON_URL=http://localhost:3001
 ENV MAX_FILE_SIZE=5MB
@@ -78,7 +78,7 @@ ENV APPERY_API_KEY ${APPERY_API_KEY}
 
 ################# compreface-api start ####################
 
-ENV API_JAVA_OPTS=-Xmx4g
+ENV API_JAVA_OPTS=-Xmx512m
 ENV SAVE_IMAGES_TO_DB=false
 ENV API_PORT=8080
 ENV CONNECTION_TIMEOUT=10000
