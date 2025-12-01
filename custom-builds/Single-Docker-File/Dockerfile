@@ -89,7 +89,7 @@ COPY --from=api /home/app.jar /app/api/app.jar
 
 ################# compreface-fe start ####################
 
-RUN apt-get update && apt-get install -y nginx \
+RUN apt-get update && apt-get install -y nginx gettext-base \
     && rm -rf /var/lib/apt/lists/*
 RUN adduser --system --no-create-home --shell /bin/false --group --disabled-login nginx
 
@@ -97,7 +97,7 @@ USER nginx
 
 COPY --from=fe /usr/share/nginx/html /usr/share/nginx/html
 COPY --from=fe /etc/nginx/ /etc/nginx/
-COPY custom-builds/Single-Docker-File/nginx.conf /etc/nginx/conf.d/nginx.conf
+COPY custom-builds/Single-Docker-File/nginx.conf.template /etc/nginx/conf.d/nginx.conf.template
 
 USER root
 ################# compreface-fe end ####################
