@@ -59,8 +59,8 @@ ENV ENABLE_EMAIL_SERVER=false
 ENV ADMIN_JAVA_OPTS=-Xmx256m
 ENV CRUD_PORT=8081
 ENV PYTHON_URL=http://localhost:3001
-ENV MAX_FILE_SIZE=5MB
-ENV MAX_REQUEST_SIZE=10MB
+ENV MAX_FILE_SIZE=10MB
+ENV MAX_REQUEST_SIZE=20MB
 
 # Original lines for Adoptium repository and temurin-17-jdk are replaced below
 # RUN apt-get update \
