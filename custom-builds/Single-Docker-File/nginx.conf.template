@@ -21,6 +21,14 @@ server {
         try_files $uri $uri/ /index.html =404;
     }
 
+    location = /admin/status {
+        proxy_pass http://frsapi/api/v1/consistence/status;
+    }
+
+    location /admin/ {
+        proxy_pass http://frsadmin/;
+    }
+
     location /admin/ {
         proxy_pass http://frsadmin/;
     }
