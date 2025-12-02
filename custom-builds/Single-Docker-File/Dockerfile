@@ -13,7 +13,8 @@ FROM ${BASE_IMAGE}
 
 ENV UWSGI_PROCESSES=1
 ENV UWSGI_THREADS=1 
-ENV ML_PORT=3001
+# Core HTTP server listens on port 3000; keep default to match base image
+ENV ML_PORT=3000
 # Reduced from 2 processes to 1 to avoid loading ML model twice
 ################# compreface-core end ####################
 
@@ -59,7 +60,7 @@ ENV SPRING_PROFILES_ACTIVE=dev
 ENV ENABLE_EMAIL_SERVER=false
 ENV ADMIN_JAVA_OPTS=-Xmx256m
 ENV CRUD_PORT=8081
-ENV PYTHON_URL=http://localhost:3001
+ENV PYTHON_URL=http://localhost:3000
 ENV MAX_FILE_SIZE=10MB
 ENV MAX_REQUEST_SIZE=20MB
 
