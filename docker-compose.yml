@@ -9,9 +9,9 @@ services:
     restart: always
     container_name: "compreface-postgres-db"
     environment:
-      - POSTGRES_USER=${postgres_username}
-      - POSTGRES_PASSWORD=${postgres_password}
-      - POSTGRES_DB=${postgres_db}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
@@ -20,18 +20,18 @@ services:
     image: ${registry}compreface-admin:${ADMIN_VERSION}
     container_name: "compreface-admin"
     environment:
-      - POSTGRES_USER=${postgres_username}
-      - POSTGRES_PASSWORD=${postgres_password}
-      - POSTGRES_URL=jdbc:postgresql://${postgres_domain}:${postgres_port}/${postgres_db}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_URL=${POSTGRES_URL}
       - SPRING_PROFILES_ACTIVE=dev
-      - ENABLE_EMAIL_SERVER=${enable_email_server}
+      - ENABLE_EMAIL_SERVER=${ENABLE_EMAIL_SERVER}
       - EMAIL_HOST=${email_host}
       - EMAIL_USERNAME=${email_username}
       - EMAIL_FROM=${email_from}
       - EMAIL_PASSWORD=${email_password}
       - ADMIN_JAVA_OPTS=${compreface_admin_java_options}
-      - MAX_FILE_SIZE=${max_file_size}
-      - MAX_REQUEST_SIZE=${max_request_size}B
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE}
+      - MAX_REQUEST_SIZE=${MAX_REQUEST_SIZE}
     depends_on:
       - compreface-postgres-db
       - compreface-api
@@ -43,16 +43,16 @@ services:
     depends_on:
       - compreface-postgres-db
     environment:
-      - POSTGRES_USER=${postgres_username}
-      - POSTGRES_PASSWORD=${postgres_password}
-      - POSTGRES_URL=jdbc:postgresql://${postgres_domain}:${postgres_port}/${postgres_db}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_URL=${POSTGRES_URL}
       - SPRING_PROFILES_ACTIVE=dev
       - API_JAVA_OPTS=${compreface_api_java_options}
-      - SAVE_IMAGES_TO_DB=${save_images_to_db}
-      - MAX_FILE_SIZE=${max_file_size}
-      - MAX_REQUEST_SIZE=${max_request_size}B
-      - CONNECTION_TIMEOUT=${connection_timeout:-10000}
-      - READ_TIMEOUT=${read_timeout:-60000}
+      - SAVE_IMAGES_TO_DB=${SAVE_IMAGES_TO_DB}
+      - MAX_FILE_SIZE=${MAX_FILE_SIZE}
+      - MAX_REQUEST_SIZE=${MAX_REQUEST_SIZE}
+      - CONNECTION_TIMEOUT=${CONNECTION_TIMEOUT:-10000}
+      - READ_TIMEOUT=${READ_TIMEOUT:-60000}
 
   compreface-fe:
     restart: always
@@ -64,9 +64,9 @@ services:
       - compreface-api
       - compreface-admin
     environment:
-      - CLIENT_MAX_BODY_SIZE=${max_request_size}
-      - PROXY_READ_TIMEOUT=${read_timeout:-60000}ms
-      - PROXY_CONNECT_TIMEOUT=${connection_timeout:-10000}ms
+      - CLIENT_MAX_BODY_SIZE=${MAX_REQUEST_SIZE}
+      - PROXY_READ_TIMEOUT=${READ_TIMEOUT:-60000}ms
+      - PROXY_CONNECT_TIMEOUT=${CONNECTION_TIMEOUT:-10000}ms
 
   compreface-core:
     restart: always
@@ -75,8 +75,8 @@ services:
     environment:
       - ML_PORT=3000
       - IMG_LENGTH_LIMIT=${max_detect_size}
-      - UWSGI_PROCESSES=${uwsgi_processes:-2}
-      - UWSGI_THREADS=${uwsgi_threads:-1}
+      - UWSGI_PROCESSES=${UWSGI_PROCESSES:-2}
+      - UWSGI_THREADS=${UWSGI_THREADS:-1}
     healthcheck:
       test: curl --fail http://localhost:3000/healthcheck || exit 1
       interval: 10s

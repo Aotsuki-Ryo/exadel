@@ -53,7 +53,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ################# compreface-admin start ####################
 
-ENV POSTGRES_URL=jdbc:postgresql://${POSTGRES_DOMAIN}:${POSTGRES_PORT}/${POSTGRES_DB}
+# POSTGRES_URL, POSTGRES_USER, POSTGRES_PASSWORD are injected by Railway at runtime
+# Do NOT set them here - they will be empty at build time
 ENV SPRING_PROFILES_ACTIVE=dev
 ENV ENABLE_EMAIL_SERVER=false
 ENV ADMIN_JAVA_OPTS=-Xmx256m
